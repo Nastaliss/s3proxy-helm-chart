@@ -2,7 +2,7 @@ apiVersion: v2
 name: s3-proxy
 version: 0.0.1
 kubeVersion: '>= 1.29.0'
-description: A single-sentence description of this project (optional)
+description: A helm chart for deploying S3Proxy, a Java-based proxy for S3-compatible object storage.
 type: application
 keywords:
   - s3
@@ -12,11 +12,10 @@ keywords:
 home: https://github.com/Nastaliss/s3proxy-helm-chart
 sources:
   - https://github.com/gaul/s3proxy
-maintainers: # (optional)
+maintainers:
   - name: Nastaliss
     email: contact@nastaliss.eu
     url: https://github.com/Nastaliss
-icon: A URL to an SVG or PNG image to be used as an icon (optional).
 appVersion: 2.6.0
 deprecated: false
 annotations: {}

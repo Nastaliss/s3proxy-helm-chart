@@ -1,0 +1,40 @@
+name: Deploy test version
+on:
+  push:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package-and-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./common
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Helm
+      uses: azure/setup-helm@v4
+    - name: Login to Azure Container Registry
+      run: |
+        echo $GITHUB_TOKEN_REGISTRY | helm registry login ${{ vars.OCI_REGISTRY_URL }} --username ${{ github.actor }} --password-stdin
+    - name: Get chart version
+      id: get_chart_version
+      uses: mikefarah/yq@v4.40.5
+      with:
+        cmd: yq e '.version' ./common/Chart.yaml
+    - name: Set calculated chart version
+      if: ${{ github.ref != 'refs/heads/main' }}
+      run: |
+        echo "CURRENT_VERSION=${{ steps.get_chart_version.outputs.result }}-alpha" >> $GITHUB_ENV
+    - name: Set calculated chart version
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: |
+        echo "CURRENT_VERSION=${{ steps.get_chart_version.outputs.result }}-beta" >> $GITHUB_ENV
+    - name: Build and push chart
+      run: |
+        helm package . --version "$CURRENT_VERSION"
+        helm push "common-${CURRENT_VERSION}.tgz" "oci://${{ vars.DOCKER_PROD_REGISTRY }}/helm"

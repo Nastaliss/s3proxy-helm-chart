@@ -1,0 +1,41 @@
+name: Deploy to production
+on:
+  push:
+    tags:
+    - v*.*.*
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package-and-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./s3proxy
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Helm
+      uses: azure/setup-helm@v4
+    - name: Login to Azure Container Registry
+      run: |
+        echo $GITHUB_TOKEN_REGISTRY | helm registry login ${{ vars.OCI_REGISTRY_URL }} --username ${{ github.actor }} --password-stdin
+    - name: Get chart version
+      id: get_chart_version
+      uses: mikefarah/yq@v4.40.5
+      with:
+        cmd: yq e '.version' ./common/Chart.yaml
+    - name: Ensure tag matches chart version
+      run: |
+        current_version=${{ steps.get_chart_version.outputs.result }}
+        if [[ "${{ github.ref }}" != "refs/tags/v$current_version" ]]; then
+          echo "Tag does not match chart version"
+          exit 1
+        fi
+    - name: Build and push chart
+      run: |
+        helm package .
+        helm push *.tgz "oci://${{ vars.OCI_REGISTRY_URL }}/helm"
+
+
