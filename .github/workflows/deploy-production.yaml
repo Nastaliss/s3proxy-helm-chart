@@ -25,7 +25,7 @@ jobs:
       id: get_chart_version
       uses: mikefarah/yq@v4.40.5
       with:
-        cmd: yq e '.version' ./common/Chart.yaml
+        cmd: yq e '.version' Chart.yaml
     - name: Ensure tag matches chart version
       run: |
         current_version=${{ steps.get_chart_version.outputs.result }}

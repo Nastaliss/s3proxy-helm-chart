@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./common
+        working-directory: ./s3proxy
     steps:
     - uses: actions/checkout@v4
     - name: Set up Helm
@@ -25,7 +25,7 @@ jobs:
       id: get_chart_version
       uses: mikefarah/yq@v4.40.5
       with:
-        cmd: yq e '.version' ./common/Chart.yaml
+        cmd: yq e '.version' Chart.yaml
     - name: Set calculated chart version
       if: ${{ github.ref != 'refs/heads/main' }}
       run: |
