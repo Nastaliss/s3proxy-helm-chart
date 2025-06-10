@@ -36,5 +36,5 @@ jobs:
         echo "CURRENT_VERSION=${{ steps.get_chart_version.outputs.result }}-beta" >> $GITHUB_ENV
     - name: Build and push chart
       run: |
-        helm package . --version "$CURRENT_VERSION"
-        helm push "common-${CURRENT_VERSION}.tgz" "oci://${{ vars.DOCKER_PROD_REGISTRY }}/helm"
+        fileName=$(helm package . --version "$CURRENT_VERSION" | grep -Po "([a-zA-Z0-9-\.]*.tgz)$")
+        helm push $fileName "oci://${{ vars.OCI_REGISTRY_URL }}/helm"
