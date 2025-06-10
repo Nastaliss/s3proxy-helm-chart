@@ -23,9 +23,9 @@ jobs:
         echo ${{secrets.OCI_REGISTRY_PASSWORD}} | helm registry login ${{ vars.OCI_REGISTRY_URL }} --username ${{ github.actor }} --password-stdin
     - name: Get chart version
       id: get_chart_version
-      uses: mikefarah/yq@v4.40.5
-      with:
-        cmd: yq e '.version' Chart.yaml
+      run: |
+        version=$(yq e '.version' Chart.yaml)
+        echo "result=${version}" >> $GITHUB_OUTPUT
     - name: Ensure tag matches chart version
       run: |
         current_version=${{ steps.get_chart_version.outputs.result }}
