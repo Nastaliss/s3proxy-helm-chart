@@ -20,7 +20,7 @@ jobs:
       uses: azure/setup-helm@v4
     - name: Login to Azure Container Registry
       run: |
-        echo $GITHUB_TOKEN_REGISTRY | helm registry login ${{ vars.OCI_REGISTRY_URL }} --username ${{ github.actor }} --password-stdin
+        echo ${{secrets.OCI_REGISTRY_PASSWORD}} | helm registry login ${{ vars.OCI_REGISTRY_URL }} --username ${{ github.actor }} --password-stdin
     - name: Get chart version
       id: get_chart_version
       uses: mikefarah/yq@v4.40.5
