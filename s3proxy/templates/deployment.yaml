@@ -63,7 +63,7 @@ spec:
               valueFrom:
                 secretKeyRef:
       {{- if empty .Values.existingSecretName }}
-                  name: "{{ include "s3proxy.fullname" . }}-secret"
+                  name: {{ include "s3proxy.fullname" . }}
       {{- else }}
                   name: {{ .Values.existingSecretName }}
       {{- end }}
@@ -73,7 +73,7 @@ spec:
               valueFrom:
                 secretKeyRef:
       {{- if empty .Values.existingSecretName }}
-                  name: "{{ include "s3proxy.fullname" . }}-secret"
+                  name: {{ include "s3proxy.fullname" . }}
       {{- else }}
                   name: {{ .Values.existingSecretName }}
       {{- end }}
