@@ -113,3 +113,6 @@ topologySpreadConstraints:
     labelSelector:
       matchLabels:
         app: s3proxy
+
+# existingSecretName: ""
+environmentSecrets: {}
