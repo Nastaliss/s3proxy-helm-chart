@@ -82,6 +82,13 @@ spec:
       {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
       {{- end }}
+          envFrom:
+          - secretRef:
+              {{- if empty .Values.existingSecretName }}
+              name: {{ include "s3proxy.fullname" . }}
+              {{- else }}
+              name: {{ .Values.existingSecretName }}
+              {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
